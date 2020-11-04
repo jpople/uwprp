@@ -1,0 +1,18 @@
+APPROACH I: ONE AGRICOLA
+
+- engine is never reset over the course of entire run
+- not that many encounters; encounters relatively long/intense, maybe something like multiple waves; each ends with a Harvest equivalent
+- boss fight follows 
+
+APPROACH II: MULTIPLE AGRICOLAS <--- this is what we're rolling with for now
+
+- engine resets for each "act"
+- combats fairly short
+- let's say 3 acts, each 10 rooms + boss
+- player gets multiple turns to prepare for every enemy turn probably?
+- upkeep is paid after every encounter
+
+APPROACH III: OH GOD SO MANY AGRICOLAS
+
+- engine resets entirely for each combat
+- enemy takes one turn for each player turn, enemy turns probably have to be pretty low-impact most of the time/attacks few and far between so player doesn't have to block literally all the time

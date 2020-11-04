@@ -1,0 +1,41 @@
+ROGUELI(K/T)ES:
+
+    MUST HAVE:
+
+        - partially random progression
+        - short-term "run"/session
+        - runs consist of various kinds of encounters
+        - long-term resource management that persists between encounters within a run
+        - rewards for taking on combats or equivalents
+        - you win or you die
+
+    CAN HAVE:
+
+        - "meta" progression (persists between runs)
+        - different starter builds
+        - discrete "acts"/areas with different encounter pools/difficulty levels, each ending in a boss
+            - is this a can or a must?
+        - possible encounter types:
+            - combat
+                - hallway fights
+                - minibosses (sometimes-optional hard fights for extra rewards)
+                - bosses (mandatory, at relatively fixed positions)
+            - shops
+            - rest/healing sites
+            - "friendly"/"misc" encounters
+        - long-term resource types:
+            - possible actions for during encounters (e.g. weapons, cards, active abilities/spells)
+            - passive bonuses, or modifiers to actions during encounters
+            - currency (implies the existence of shops)
+            - HP
+        - status effects
+            - DOT
+            - flat damage buffs/debuffs
+        - game state has some notion of "resetting" between encounters (e.g. buffs/debuffs wear off)
+        - player is given limited choice in how to proceed (e.g. what type of encounter, or what type of reward)
+        - difficulty scaling (this is basically a must for replayability)
+
+    IMPORTANT CONCEPTS:
+
+        - risk vs. reward; allow "greedy" plays
+        - limited foresight; experienced players should be able to know what can happen, but not necessarily what will

@@ -1,0 +1,14 @@
+How to Play
+
+In UWPRP, you run a village, which consists of a few villagers and tasks that they can be assigned to.  Each turn during a combat encounter (there'll be noncombat encounters Eventually (TM)), you will assign each of your villagers to a task.  Each task can only be worked by one villager per turn.  
+
+After all of your villagers have been assigned, the enemy will take its own turn with its own action.
+
+This process repeats until one of you has your HP reduced to 0 and dies.  Ideally, that would be the enemy.
+
+The tasks are:
+
+* Attack - allows you to deal damage to an enemy
+* Block - generates Fortification.  Fortification will negate incoming damage, but expires after the enemy's turn is over.
+* Forage - gives you Food.  At the end of each combat, your villagers who have worked hard for you all day are starving and will want 5 food each.  Each villager to whom you can't provide this food will be displeased by your tyranny and deal 20 damage to you.
+* Gather - gives you Materials.  These don't do anything yet, don't worry about it.

@@ -1,0 +1,52 @@
+ACTUAL MECHANICS:
+
+- are all actions available at one time?
+    - if yes:
+        - how do we maintain variance?
+    - if no:
+        - how do we pick?
+        - how often do new actions show up/old actions go away?
+- what do enemies do on their turn?
+    - attack player
+    - debuff player
+    - debuff workers?  what does this look like?
+    - make player action worse or unavailable entirely for a period
+    - take resources
+- how often do enemies take their turn relative to the player?
+- how many workers does the player start with?
+    - 2 seems nice
+- what recall mechanism do we use?
+    - とりあえず: agricola-style
+- what do rewards look like?
+    - add workers (on miniboss)?
+    - add new actions to pool: are we just another deckbuilder at that point?
+    - upgrade existing actions
+    - passive bonuses a la Occupations
+    - gain money
+    - unlock next phase of actions? maybe every N encounters?
+
+FIRST TIER ACTIONS:
+    - bad attack (hit enemy's face for N)
+    - bad defend (gain N fortifications)
+    - bad gather resources (gain N building resources)
+        - maybe: random returns?
+        - resources: wood, gold
+    - bad infrastructure
+        - build house
+        - gain food over time
+        - convert building resources to food
+        - convert HP or gold to food?
+    - very bad gain food
+    - research: spend building resources to unlock second tier actions 
+
+SECOND TIER ACTIONS:
+    - less bad attack (hit enemy's face for N); is this a new action or an in-place upgrade?
+    - less bad block (gain N fortifications); see above
+    - less bad gather resources
+    - infrastructure upgrade; gather gold?
+    - "family growth"
+
+COMBAT:
+    - at start of combat and when new tier is unlocked, physical placement of actions is randomized; this can matter
+    - player places all workers, then enemy takes turn; repeat
+    - at end of combat, player loses... 20 HP for each worker unless they pay... 5 food each? sure, let's roll with that

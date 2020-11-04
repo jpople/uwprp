@@ -1,0 +1,36 @@
+WORKER PLACEMENTS:
+
+    MUST HAVE:
+
+        - workers that the player assigns individually to actions
+        - player can gain more workers
+        - once taken, an action (and the worker assigned to it) are unavailable for some amount of time
+        - at certain points, pay upkeep cost that scales with number of workers you have
+        - management of multiple kinds of resources
+        
+    CAN HAVE:
+
+        - some actions locked behind time/game progression
+        - player can choose not to pay worker upkeep, albeit at a heavy penalty
+        - mechanisms to reward player for taking varied actions and not overspecializing, e.g.:
+            - actions get better the longer you go without taking them
+            - player incurs penalties if they neglect a mechanic/aspect of the game entirely
+        - possible action types:
+            - gain resource
+            - gain worker
+            - set up/enhance future actions (e.g. sow fields)
+            - "research"; do/get things to improve engine in the short- or long-term
+            - convert one type of resource to another
+        - possible resource types:
+            - “food”; pay worker upkeeps
+            - building resources (usually in multiple types) used for research or expansion
+            - “victory points”; resource that doesn’t directly improve player’s build or game but offers some other reward instead
+        - mechanisms for “returning” player’s workers, e.g.:
+            - call some or all assigned workers home as an action
+            - play until all workers have been assigned, then they return automatically
+            - actions take workers a given amount of time to complete, after which they return automatically
+
+    IMPORTANT CONCEPTS:
+
+        - both short-term and long-term deadlines
+        - time/opportunity is most meaningful cost to taking actions; that "man, if I just had one more turn" feeling
