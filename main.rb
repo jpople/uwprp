@@ -4,6 +4,9 @@ require './classes.rb'
 # clean up absolutely everything, God, look at this mess
 # wrap death checks into damage-taking functions... somehow
 # create separate lose-HP function so fortification can be ignored for upkeep and other types of armor-piercing; this probably will assist in cleanup of player.take_damage also
+# add razing
+# add other enemy abilities
+# make enemy attack randomize every time instead of just on initialize
 
 puts "Welcome to Untitled Worker Placement Roguelite Project's Alpha version!"
 puts "You can type 'quit' at any time to quit the game.  If it's your first time playing, you should read help.txt in the game directory."
@@ -15,15 +18,17 @@ attack = ActionSpace.new 1, "Attack", "Deal 6 damage."
 block = ActionSpace.new 1, "Block", "Gain 5 Fortification."
 gather = ActionSpace.new 1, "Gather", "Gain 3 Materials."
 forage = ActionSpace.new 1, "Forage", "Gain 3 Food."
+research = ActionSpace.new 1, "Research", "Pay 10 Materials to unlock new actions."
+build = ActionSpace.new 1, "Build", "Pay Materials to permanently expand or improve your village."
 
 player = Player.new
-player.available_actions = [attack, block, gather, forage]
+player.available_actions = [attack, block, gather, forage, research, build]
 
 combat = Encounter.new player, [Birb.new]
 
 quit = false
-while !quit do # main game loop
-    if player.free_workers > 0 # player turn section
+while !quit do # main encounter loop
+    if player.free_workers > 0 # player turn
         system("cls")
         combat.show_info
         command = player.get_num_input "Select an action:", player.available_actions.length
@@ -38,10 +43,7 @@ while !quit do # main game loop
             player.free_workers -= 1
             # TODO: add literally any modularity to this section
             if action == attack
-                # TODO: if there multiple enemies, choose target
-                target = combat.enemy_array[0]
-                target.take_damage 6
-                player.enter_to_continue "You hit #{target.name} for 6 damage!"
+                player.attack combat, 6
             elsif action == block
                 player.fortification += 5
                 player.enter_to_continue "You gained 5 Fortification!"

@@ -30,7 +30,7 @@ ROGUELI(K/T)ES:
             - HP
         - status effects
             - DOT
-            - flat damage buffs/debuffs
+            - damage buffs/debuffs
         - game state has some notion of "resetting" between encounters (e.g. buffs/debuffs wear off)
         - player is given limited choice in how to proceed (e.g. what type of encounter, or what type of reward)
         - difficulty scaling (this is basically a must for replayability)
@@ -38,4 +38,4 @@ ROGUELI(K/T)ES:
     IMPORTANT CONCEPTS:
 
         - risk vs. reward; allow "greedy" plays
-        - limited foresight; experienced players should be able to know what can happen, but not necessarily what will
+        - limited foresight; experienced players should be able to plan around what can happen, but not know for sure what will
