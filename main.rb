@@ -7,7 +7,7 @@ require './classes.rb'
 
 player = Player.new
 
-puts "Welcome to Untitled Worker Placement Roguelite Project's Alpha version!"
+puts "Welcome to Untitled Worker Placement Roguelite Project's pre-Alpha version!"
 puts "You can type 'quit' at any time to quit the game.  If it's your first time playing, you should read help.txt in the game directory."
 player.enter_to_continue "Although I find it hard to imagine that you'd reach this screen without knowing me in real life, so you can also just hit me up and ask if you have questions."
 
@@ -61,7 +61,7 @@ while !quit do # main encounter loop
                     player.food -= 5
                     if player.food < 0
                         player.enter_to_continue "Failed to feed a worker! You lose 20 HP."
-                        player.take_damage 20
+                        player.lose_hp 20
                     end
                 end
                 if player.current_hp < 0 # check if player has died
@@ -78,9 +78,6 @@ while !quit do # main encounter loop
             if enemy.next_action == "attack"
                 player.enter_to_continue "#{enemy.name} attacks you for #{enemy.attack_damage} damage!"
                 player.take_damage enemy.attack_damage
-                if player.fortification < 0
-                    player.fortification = 0
-                end
             elsif enemy.next_action == "raze"
                 target = player.available_actions[enemy.raze_target]
                 player.enter_to_continue "#{enemy.name} razes #{target.name}; it can't be used next turn!"

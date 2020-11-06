@@ -12,7 +12,7 @@ class Encounter # someday it'll probably be good to have this be a more generic 
         player.materials = 0
         player.food = 0
         player.fortification = 0
-        player.available_actions.shuffle! # this matters because eventually we want to do things that deal with action locations (maybe?)
+        player.available_actions.shuffle! # this matters because eventually we want to do things that deal with action locations (...maybe?)
     end
 
     # HUD methods
@@ -44,9 +44,10 @@ end
 class Character
     attr_accessor :max_hp
     attr_accessor :current_hp
+    attr_accessor :fortification
 
-    def take_damage damage_value
-        self.current_hp -= damage_value
+    def lose_hp loss_value
+        self.current_hp -= loss_value
     end
 
     def get_fuzzy_int average, radius # generates a number distributed uniformly around average +/- radius; e.g. passing 10, 2 will make a number from 8-12
@@ -55,6 +56,12 @@ class Character
         max = average + radius
         rng.rand(min..max)
     end
+
+    def enter_to_continue prompt
+        puts prompt
+        puts "(press Enter to continue)"
+        gets
+    end
 end
 
 class Player < Character
@@ -62,7 +69,6 @@ class Player < Character
     attr_accessor :available_actions
     attr_accessor :max_workers
     attr_accessor :free_workers
-    attr_accessor :fortification
     attr_accessor :gold
     attr_accessor :materials
     attr_accessor :food
@@ -92,19 +98,16 @@ class Player < Character
         end
     end
 
-    def take_damage damage_value # this is a mess
-        if self.fortification != 0
-            puts "#{self.fortification} damage blocked!"    
+    def take_damage damage_value
+        if damage_value <= self.fortification
+            enter_to_continue "#{damage_value} damage blocked!"
             self.fortification -= damage_value
-            if self.fortification < 0
-                enter_to_continue "You take #{-self.fortification} damage!"
-                self.current_hp += self.fortification
-            else
-                enter_to_continue "All damage blocked!"
-            end
         else
-            self.current_hp -= damage_value
-            enter_to_continue "You take #{damage_value} damage!"
+            puts "#{self.fortification} damage blocked!"
+            unblocked_damage = damage_value - self.fortification
+            self.fortification = 0;
+            enter_to_continue "You take #{unblocked_damage} damage!"
+            lose_hp unblocked_damage
         end
     end
 
@@ -127,12 +130,6 @@ class Player < Character
         end
     end
 
-    def enter_to_continue prompt
-        puts prompt
-        puts "(press Enter to continue)"
-        gets
-    end
-
     # action space methods; does it make sense for these to be here? consider: another file?
 
     def attack combat, damage_value
@@ -153,6 +150,19 @@ class Enemy < Character
     attr_accessor :next_action
     attr_accessor :last_action
     attr_accessor :name
+
+    def take_damage damage_value
+        if damage_value <= self.fortification
+            enter_to_continue "#{self.name} blocks #{damage_value} damage!"
+            self.fortification -= damage_value
+        else
+            puts "#{self.name} blocks #{self.fortification} damage!"
+            unblocked_damage = damage_value - self.fortification
+            self.fortification = 0;
+            enter_to_continue "#{self.name} takes #{unblocked_damage} damage!"
+            lose_hp unblocked_damage
+        end
+    end
 end
 
 class Birb < Enemy
@@ -171,6 +181,7 @@ class Birb < Enemy
         @max_hp = get_fuzzy_int 25, 2
         @current_hp = max_hp 
         @name = "Birb"
+        @fortification = 0
         self.decide
     end
 end
