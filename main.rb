@@ -8,20 +8,19 @@ require './classes.rb'
 # add other enemy abilities
 # make enemy attack randomize every time instead of just on initialize
 
+player = Player.new
+
 puts "Welcome to Untitled Worker Placement Roguelite Project's Alpha version!"
 puts "You can type 'quit' at any time to quit the game.  If it's your first time playing, you should read help.txt in the game directory."
-puts "Although, I find it hard to imagine that you'd reach this screen without knowing me in real life, so you can also just hit me up and ask if you have questions."
-puts "Press Enter to start the game."
-gets
+player.enter_to_continue "Although I find it hard to imagine that you'd reach this screen without knowing me in real life, so you can also just hit me up and ask if you have questions."
 
 attack = ActionSpace.new 1, "Attack", "Deal 6 damage."
 block = ActionSpace.new 1, "Block", "Gain 5 Fortification."
 gather = ActionSpace.new 1, "Gather", "Gain 3 Materials."
 forage = ActionSpace.new 1, "Forage", "Gain 3 Food."
-research = ActionSpace.new 1, "Research", "Pay 10 Materials to unlock new actions."
-build = ActionSpace.new 1, "Build", "Pay Materials to permanently expand or improve your village."
+research = ActionSpace.new 1, "Research", "Pay 10 Materials to unlock new actions. (COMING SOON)"
+build = ActionSpace.new 1, "Build", "Pay Materials to permanently expand or improve your village. (COMING SOON)"
 
-player = Player.new
 player.available_actions = [attack, block, gather, forage, research, build]
 
 combat = Encounter.new player, [Birb.new]
@@ -79,21 +78,32 @@ while !quit do # main encounter loop
         end
     else # enemy turn section
         combat.enemy_array.each do |enemy|
-            if enemy.next_action = "attack" # eventually there might be other things that next_action can be, who knows
+            if enemy.next_action == "attack"
                 player.enter_to_continue "#{enemy.name} attacks you for #{enemy.attack_damage} damage!"
                 player.take_damage enemy.attack_damage
+            elsif enemy.next_action == "raze"
+                target = player.available_actions[enemy.raze_target]
+                player.enter_to_continue "#{enemy.name} razes #{target.name}; it can't be used next turn!"
+                target.raze
             end
-            if player.current_hp < 0 # check if player has died
+            if player.current_hp <= 0 # check if player has died
                 player.enter_to_continue "You have died.  Git gud."
                 quit = true
-            else # reset for next turn
-                combat.turn_number += 1
-                player.free_workers = player.max_workers
-                player.fortification = 0
-                player.available_actions.each do |action|
+            end
+            enemy.decide
+        end
+        if player.current_hp > 0 # reset for next turn
+            combat.turn_number += 1
+            player.free_workers = player.max_workers
+            player.fortification = 0
+            player.available_actions.each do |action|
+                if action.razed
+                    action.razed = false
+                    puts "#{action.name} has now been unrazed!"
+                else
                     action.available = true
                 end
-            end  
-        end
+            end
+        end  
     end
 end

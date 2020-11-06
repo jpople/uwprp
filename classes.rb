@@ -21,7 +21,12 @@ class Encounter # someday it'll probably be good to have this be a more generic 
         indicator = 1
         enemy_array.each do |enemy|
             puts "[#{indicator}] #{enemy.name}: #{enemy.current_hp}/#{enemy.max_hp} HP"
-            puts "#{enemy.name} intends to attack for #{enemy.attack_damage} damage" # will need to redo this when enemies can do things other than attack, obviously
+            if enemy.next_action == "attack"
+                puts "#{enemy.name} intends to attack for #{enemy.attack_damage} damage"
+            elsif enemy.next_action == "raze"
+                target = player.available_actions[enemy.raze_target]
+                puts "#{enemy.name} intends to raze #{target.name}"
+            end
             indicator += 1
         end
     end
@@ -152,13 +157,21 @@ end
 
 class Birb < Enemy
     attr_accessor :attack_damage
+    attr_accessor :raze_target
+    attr_accessor :player
+
+    def decide
+        rng = Random.new
+        @next_action = ["attack", "raze"].sample
+        @attack_damage = get_fuzzy_int 6, 1
+        @raze_target = rng.rand(6)
+    end
 
     def initialize
         @max_hp = get_fuzzy_int 25, 2
-        @current_hp = max_hp
-        @next_action = "attack"
+        @current_hp = max_hp 
         @name = "Birb"
-        @attack_damage = get_fuzzy_int 6, 1
+        self.decide
     end
 end
 
@@ -180,5 +193,10 @@ class ActionSpace
         self.description = description
         self.available = true
         self.razed = false
+    end
+
+    def raze
+        self.razed = true
+        self.available = false
     end
 end
