@@ -142,7 +142,7 @@ class Player < Character
         else
             combat.display_enemy_info
             target_index = get_num_input "Choose an enemy to attack:" , enemy_array.length
-            target = enemy_array[target - 1]
+            target = enemy_array[target_index - 1]
         end
         target.take_damage damage_value
         enter_to_continue "You hit #{target.name} for 6 damage!"

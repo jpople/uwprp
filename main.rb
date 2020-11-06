@@ -4,9 +4,6 @@ require './classes.rb'
 # clean up absolutely everything, God, look at this mess
 # wrap death checks into damage-taking functions... somehow
 # create separate lose-HP function so fortification can be ignored for upkeep and other types of armor-piercing; this probably will assist in cleanup of player.take_damage also
-# add razing
-# add other enemy abilities
-# make enemy attack randomize every time instead of just on initialize
 
 player = Player.new
 
@@ -23,7 +20,7 @@ build = ActionSpace.new 1, "Build", "Pay Materials to permanently expand or impr
 
 player.available_actions = [attack, block, gather, forage, research, build]
 
-combat = Encounter.new player, [Birb.new]
+combat = Encounter.new player, [Birb.new, Birb.new]
 
 quit = false
 while !quit do # main encounter loop
@@ -81,6 +78,9 @@ while !quit do # main encounter loop
             if enemy.next_action == "attack"
                 player.enter_to_continue "#{enemy.name} attacks you for #{enemy.attack_damage} damage!"
                 player.take_damage enemy.attack_damage
+                if player.fortification < 0
+                    player.fortification = 0
+                end
             elsif enemy.next_action == "raze"
                 target = player.available_actions[enemy.raze_target]
                 player.enter_to_continue "#{enemy.name} razes #{target.name}; it can't be used next turn!"
