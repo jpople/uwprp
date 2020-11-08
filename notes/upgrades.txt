@@ -1,0 +1,10 @@
+BUILDINGS
+
+Barracks (5) - Your Attack action deals 2 additional damage.
+Walls (5) - Your Fortification doesn't expire at end of turn.
+Farm (5) - Gives you 2 food free at the end of each combat.
+
+STAGE II ACTIONS
+
+Train - Gain 1 Worker this combat
+Scout - Deal 3 damage to an enemy, gain 3 Fortification

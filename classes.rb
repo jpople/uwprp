@@ -39,6 +39,39 @@ class Encounter # someday it'll probably be good to have this be a more generic 
         player.display_status
         puts
     end
+
+    # turn 
+    def enemy_turn
+        # trigger beginning-of-enemy-turn effects (eventually)
+        # enemy actions
+        enemy_array.each do |enemy|
+            if enemy.next_action == "attack"
+                player.enter_to_continue "#{enemy.name} attacks you for #{enemy.attack_damage} damage!"
+                player.take_damage enemy.attack_damage
+            elsif enemy.next_action == "raze"
+                target = player.available_actions[enemy.raze_target]
+                player.enter_to_continue "#{enemy.name} razes #{target.name}; it can't be used next turn!"
+                target.raze
+            end
+            if player.current_hp <= 0 # check if player has died
+                player.enter_to_continue "You have died.  Git gud."
+                quit = true
+            end
+            enemy.decide
+        end
+        # trigger end-of-enemy-turn effects (eventually)
+        # reset for next player turn
+        self.turn_number += 1
+        player.free_workers = player.max_workers
+        player.fortification = 0
+        player.available_actions.each do |action|
+            if action.razed
+                action.razed = false
+            else
+                action.available = true
+            end
+        end
+    end
 end
 
 class Character
@@ -72,6 +105,7 @@ class Player < Character
     attr_accessor :gold
     attr_accessor :materials
     attr_accessor :food
+    attr_accessor :dead
 
     def initialize
         self.max_hp = 100
@@ -109,12 +143,14 @@ class Player < Character
             enter_to_continue "You take #{unblocked_damage} damage!"
             lose_hp unblocked_damage
         end
+        return self.current_hp <= 0
     end
 
     # I/O handling methods
 
     def get_num_input prompt, max # prompts the user for a number up to max, or returns "quit" if they type "quit" instead
     # probably easier if this just directly selects from an array instead; is there any reason max would be anything other than some_array.length?
+    # this... probably belongs in a class higher on the hierarchy?
         puts prompt
         input = gets.chomp
         if input == "quit"
@@ -132,7 +168,7 @@ class Player < Character
 
     # action space methods; does it make sense for these to be here? consider: another file?
 
-    def attack combat, damage_value
+    def attack combat, damage_value # feels aesthetically off for this to take the combat as an argument, consider moving
         enemy_array = combat.enemy_array
         if enemy_array.length == 1
             target = enemy_array[0]
@@ -141,8 +177,8 @@ class Player < Character
             target_index = get_num_input "Choose an enemy to attack:" , enemy_array.length
             target = enemy_array[target_index - 1]
         end
+        puts "You hit #{target.name} for #{damage_value} damage!"
         target.take_damage damage_value
-        enter_to_continue "You hit #{target.name} for 6 damage!"
     end
 end
 
@@ -156,19 +192,24 @@ class Enemy < Character
             enter_to_continue "#{self.name} blocks #{damage_value} damage!"
             self.fortification -= damage_value
         else
-            puts "#{self.name} blocks #{self.fortification} damage!"
+            if self.fortification > 0
+                puts "#{self.name} blocks #{self.fortification} damage!"
+            end
             unblocked_damage = damage_value - self.fortification
             self.fortification = 0;
             enter_to_continue "#{self.name} takes #{unblocked_damage} damage!"
             lose_hp unblocked_damage
         end
     end
+
+    def decide
+        return false
+    end
 end
 
-class Birb < Enemy
+class Raider < Enemy
     attr_accessor :attack_damage
     attr_accessor :raze_target
-    attr_accessor :player
 
     def decide
         rng = Random.new
@@ -180,15 +221,37 @@ class Birb < Enemy
     def initialize
         @max_hp = get_fuzzy_int 25, 2
         @current_hp = max_hp 
-        @name = "Birb"
+        @name = "Raider"
         @fortification = 0
         self.decide
     end
 end
 
-class EnemyAction # does it make any sense for this to inherit from ActionSpace?
-    attr_accessor :name
-    attr_accessor :description
+class Barbarian < Enemy
+    attr_accessor :attack_damage
+    
+    def initialize
+        @max_hp = get_fuzzy_int 30, 5
+        @current_hp = max_hp
+        @attack_damage = 4
+        @name = "Barbarian"
+        @fortification = 0
+        @next_action = "attack"
+    end
+
+    def take_damage damage_value # same as generic take_damage, but increments attack_damage whenever damage is taken; is there a cleaner way to do this? 
+        if damage_value <= self.fortification
+            enter_to_continue "#{self.name} blocks #{damage_value} damage!"
+            self.fortification -= damage_value
+        else
+            puts "#{self.name} blocks #{self.fortification} damage!"
+            unblocked_damage = damage_value - self.fortification
+            self.fortification = 0
+            enter_to_continue "#{self.name} takes #{unblocked_damage} damage!"
+            @attack_damage += 2
+            lose_hp unblocked_damage
+        end
+    end
 end
 
 class ActionSpace

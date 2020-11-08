@@ -1,9 +1,12 @@
 require './classes.rb'
 
 # to do: 
-# clean up absolutely everything, God, look at this mess
-# wrap death checks into damage-taking functions... somehow
-# create separate lose-HP function so fortification can be ignored for upkeep and other types of armor-piercing; this probably will assist in cleanup of player.take_damage also
+# continue cleanup; wrap player turn loop into Encounter class method somehow probably?
+# add Build
+# add support for multiple sequential combats
+# add shop
+# add boss
+# wrap death checks into damage-taking functions
 
 player = Player.new
 
@@ -15,15 +18,20 @@ attack = ActionSpace.new 1, "Attack", "Deal 6 damage."
 block = ActionSpace.new 1, "Block", "Gain 5 Fortification."
 gather = ActionSpace.new 1, "Gather", "Gain 3 Materials."
 forage = ActionSpace.new 1, "Forage", "Gain 3 Food."
-research = ActionSpace.new 1, "Research", "Pay 10 Materials to unlock new actions. (COMING SOON)"
+research = ActionSpace.new 1, "Research", "Pay 10 Materials to unlock new actions."
 build = ActionSpace.new 1, "Build", "Pay Materials to permanently expand or improve your village. (COMING SOON)"
+train = ActionSpace.new 2, "Train", "Gain 1 additional worker this combat."
+scout = ActionSpace.new 2, "Scout", "Deal 3 damage to an enemy and gain 3 Fortification."
 
+all_actions = [attack, block, gather, forage, research, build, train, scout]
 player.available_actions = [attack, block, gather, forage, research, build]
 
-combat = Encounter.new player, [Birb.new, Birb.new]
+enemies = [Raider.new, Raider.new, Barbarian.new, Barbarian.new].sample(2)
+
+combat = Encounter.new player, enemies
 
 quit = false
-while !quit do # main encounter loop
+while !quit do # main combat loop
     if player.free_workers > 0 # player turn
         system("cls")
         combat.show_info
@@ -37,7 +45,6 @@ while !quit do # main encounter loop
             action = player.available_actions[command - 1]
             action.available = false
             player.free_workers -= 1
-            # TODO: add literally any modularity to this section
             if action == attack
                 player.attack combat, 6
             elsif action == block
@@ -49,8 +56,30 @@ while !quit do # main encounter loop
             elsif action == forage
                 player.food += 3
                 player.enter_to_continue "You gained 3 Food!"
+            elsif action == research # should probably have a check to see if more actions can be unlocked at all
+                if player.materials < 10 # probably a better way to handle this
+                    player.enter_to_continue "Not enough Materials!"
+                    player.free_workers += 1
+                    action.available = true
+                else
+                    player.materials -= 10
+                    player.unlocked_phase += 1
+                    all_actions.each do |action|
+                        if action.phase == player.unlocked_phase
+                            player.available_actions << action
+                            puts "#{action.name} unlocked!"
+                        end
+                    end
+                end
+            elsif action == train
+                player.max_workers += 1
+                player.enter_to_continue "You gained 1 worker!"
+            elsif action == scout
+                player.fortification += 3
+                puts "You gained 3 Fortification!"
+                player.attack combat, 3
             end
-            combat.enemy_array.each_with_index do |enemy, index|
+            combat.enemy_array.each_with_index do |enemy, index| # this probably breaks if multiple enemies die at the same time
                 if enemy.current_hp <= 0
                     combat.enemy_array.delete_at(index)
                 end
@@ -73,34 +102,7 @@ while !quit do # main encounter loop
                 end
             end
         end
-    else # enemy turn section
-        combat.enemy_array.each do |enemy|
-            if enemy.next_action == "attack"
-                player.enter_to_continue "#{enemy.name} attacks you for #{enemy.attack_damage} damage!"
-                player.take_damage enemy.attack_damage
-            elsif enemy.next_action == "raze"
-                target = player.available_actions[enemy.raze_target]
-                player.enter_to_continue "#{enemy.name} razes #{target.name}; it can't be used next turn!"
-                target.raze
-            end
-            if player.current_hp <= 0 # check if player has died
-                player.enter_to_continue "You have died.  Git gud."
-                quit = true
-            end
-            enemy.decide
-        end
-        if player.current_hp > 0 # reset for next turn
-            combat.turn_number += 1
-            player.free_workers = player.max_workers
-            player.fortification = 0
-            player.available_actions.each do |action|
-                if action.razed
-                    action.razed = false
-                    puts "#{action.name} has now been unrazed!"
-                else
-                    action.available = true
-                end
-            end
-        end  
+    else
+        combat.enemy_turn
     end
 end
