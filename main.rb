@@ -1,4 +1,4 @@
-require './newclasses.rb'
+require './classes.rb'
 
 game = Game.new
 player = Player.new
@@ -10,7 +10,7 @@ game.enter_to_continue "Although, like, I find it hard to imagine that you'd rea
 
 while game.current_floor < 6 do
     enemy_pool = [Raider.new(player), Raider.new(player), Barbarian.new(player), Barbarian.new(player)]
-    difficulty = (current_floor / 2.0).ceil
+    difficulty = (game.current_floor / 2.0).ceil
     enemies = enemy_pool.sample difficulty
     combat = Combat.new player, enemies
     combat.run
