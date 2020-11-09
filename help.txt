@@ -6,9 +6,16 @@ After all of your villagers have been assigned, the enemy will take its own turn
 
 This process repeats until one of you has your HP reduced to 0 and dies.  Ideally, that would be the enemy.
 
-The tasks are:
+The player actions are:
 
-* Attack - allows you to deal damage to an enemy
-* Block - generates Fortification.  Fortification will negate incoming damage, but expires after the enemy's turn is over.
-* Forage - gives you Food.  At the end of each combat, your villagers who have worked hard for you all day are starving and will want 5 food each.  Each villager to whom you can't provide this food will be displeased by your tyranny and deal 20 damage to you.
-* Gather - gives you Materials.  These don't do anything yet, don't worry about it.
+PHASE I:
+* Attack - Deal damage to an enemy.
+* Block - Generate Fortification.  Fortification will negate incoming damage, but expires at the start of each player turn.
+* Forage - Gain Food.  At the end of each combat, your villagers who have worked hard for you all day are starving and will want 5 food each.  Each villager to whom you can't provide this food will be displeased by your tyranny and deal 10 damage to you.
+* Gather - Gain Materials, which you can spend to Research or Build.
+* Research - Pay 10 Materials to permanently unlock new action spaces.
+
+PHASE II (available after you have Researched):
+* Build - Pay 10 materials to build a house that can hold another worker.  You can have up to 5 houses.
+* Train - Get an additional worker (if you have room).
+* Scout - Deal low damage to an enemy and gain low Fortification.
