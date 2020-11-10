@@ -593,8 +593,8 @@ class Scout < ActionSpace
 
     def initialize player
         self.player = player
-        self.damage_value = damage_value
-        self.fortification_value = fortification_value
+        self.damage_value = 3
+        self.fortification_value = 3
         self.name = "Scout"
         self.description = "Deal 3 damage to one target and gain 3 Fortification."
         self.phase = 2
